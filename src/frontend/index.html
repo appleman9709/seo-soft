@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulk Operations</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Bulk Row Operations</h1>
+      <div class="actions">
+        <button data-modal="findReplaceModal">Find & Replace</button>
+        <button data-modal="prefixSuffixModal">Prefix/Suffix</button>
+        <button data-modal="applyTemplateModal">Apply Template</button>
+      </div>
+
+      <section>
+        <h2>Preview (first 5 changes)</h2>
+        <pre id="preview">No preview yet.</pre>
+      </section>
+
+      <dialog id="findReplaceModal">
+        <form method="dialog" class="modal-form" data-operation="findReplace">
+          <h3>Find & Replace</h3>
+          <label>Fields (comma, e.g. meta.title,schema.headline)<input name="fields" required /></label>
+          <label>Find<input name="find" required /></label>
+          <label>Replace<input name="replace" /></label>
+          <label>Scope
+            <select name="scope">
+              <option value="selected">selected</option>
+              <option value="filtered">filtered</option>
+            </select>
+          </label>
+          <menu><button value="cancel">Cancel</button><button value="submit">Preview</button></menu>
+        </form>
+      </dialog>
+
+      <dialog id="prefixSuffixModal">
+        <form method="dialog" class="modal-form" data-operation="prefixSuffix">
+          <h3>Prefix/Suffix</h3>
+          <label>Fields<input name="fields" required /></label>
+          <label>Prefix<input name="prefix" /></label>
+          <label>Suffix<input name="suffix" /></label>
+          <label>Scope
+            <select name="scope">
+              <option value="">all</option>
+              <option value="selected">selected</option>
+              <option value="filtered">filtered</option>
+            </select>
+          </label>
+          <menu><button value="cancel">Cancel</button><button value="submit">Preview</button></menu>
+        </form>
+      </dialog>
+
+      <dialog id="applyTemplateModal">
+        <form method="dialog" class="modal-form" data-operation="applyTemplate">
+          <h3>Apply Template</h3>
+          <label>Template ID<input name="templateId" value="template-seo" required /></label>
+          <label>Fields
+            <select name="fields">
+              <option value="meta">meta</option>
+              <option value="schema">schema</option>
+            </select>
+          </label>
+          <label>Scope
+            <select name="scope">
+              <option value="selected">selected</option>
+              <option value="filtered">filtered</option>
+            </select>
+          </label>
+          <menu><button value="cancel">Cancel</button><button value="submit">Preview</button></menu>
+        </form>
+      </dialog>
+
+      <section>
+        <button id="apply">Apply Last Preview</button>
+        <pre id="status"></pre>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
