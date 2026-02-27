@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generate</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; }
+      .controls { display: grid; gap: 12px; max-width: 920px; }
+      .section { border: 1px solid #ddd; padding: 12px; border-radius: 6px; }
+      label { margin-right: 12px; }
+      table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background: #f6f6f6; }
+      #progress { font-weight: bold; margin-top: 12px; }
+    </style>
+  </head>
+  <body>
+    <h1>Generation</h1>
+
+    <div class="controls">
+      <div class="section">
+        <h3>Filters</h3>
+        <label>Status:
+          <select id="statusFilter">
+            <option value="">Any</option>
+            <option value="ready">ready</option>
+            <option value="draft">draft</option>
+            <option value="paused">paused</option>
+          </select>
+        </label>
+        <label>Entity Type:
+          <select id="entityFilter">
+            <option value="">Any</option>
+            <option value="hotel">hotel</option>
+            <option value="restaurant">restaurant</option>
+            <option value="store">store</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="section">
+        <h3>Languages</h3>
+        <label><input type="checkbox" class="lang" value="en" checked /> en</label>
+        <label><input type="checkbox" class="lang" value="de" /> de</label>
+        <label><input type="checkbox" class="lang" value="fr" /> fr</label>
+        <label><input type="checkbox" class="lang" value="es" /> es</label>
+      </div>
+
+      <div class="section">
+        <h3>Templates</h3>
+        <div id="templates"></div>
+      </div>
+
+      <div class="section">
+        <button id="startBtn">Start generation</button>
+        <div id="progress">Idle</div>
+      </div>
+    </div>
+
+    <h3>Results</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Row</th>
+          <th>Language</th>
+          <th>Version</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Validations</th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+
+    <script type="module" src="/generate.js"></script>
+  </body>
+</html>
