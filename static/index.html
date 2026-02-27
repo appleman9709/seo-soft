@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEO Table</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>/table</h1>
+      <div class="lang-toggle">
+        <span>Language columns:</span>
+        <label><input type="checkbox" id="toggle-kk" /> KK</label>
+        <label><input type="checkbox" id="toggle-en" /> EN</label>
+      </div>
+    </header>
+
+    <section id="bulk-bar" class="bulk-bar hidden">
+      <span id="bulk-count">0 selected</span>
+      <button data-action="publish">Bulk publish</button>
+      <button data-action="draft">Move to draft</button>
+      <button data-action="clear">Clear selection</button>
+    </section>
+
+    <main class="layout">
+      <section class="table-pane">
+        <table id="grid">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <aside id="drawer" class="drawer hidden">
+        <div class="drawer-head">
+          <h2>Row details</h2>
+          <button id="close-drawer">✕</button>
+        </div>
+        <section>
+          <h3>Google snippet preview</h3>
+          <div id="snippet" class="snippet"></div>
+        </section>
+        <section>
+          <h3>JSON-LD</h3>
+          <pre id="jsonld"></pre>
+        </section>
+        <section>
+          <h3>Validations</h3>
+          <ul id="validations"></ul>
+        </section>
+        <section>
+          <h3>Version history</h3>
+          <ul id="history"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
