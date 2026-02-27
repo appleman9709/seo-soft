@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generation Jobs</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 680px; }
+      .row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+      .status { margin-top: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+      progress { width: 100%; height: 20px; }
+      .error-list { color: #9f1239; }
+    </style>
+  </head>
+  <body>
+    <h1>Background Generation</h1>
+
+    <div class="row">
+      <input id="projectId" value="demo-project" />
+      <button id="startBtn">Start generation</button>
+    </div>
+
+    <div class="status">
+      <div><strong>Run ID:</strong> <span id="runId">-</span></div>
+      <div><strong>Status:</strong> <span id="status">idle</span></div>
+      <div><strong>Progress:</strong> <span id="progressText">0 / 0</span></div>
+      <progress id="progressBar" max="1" value="0"></progress>
+      <div><strong>Error:</strong> <span id="fatalError">none</span></div>
+      <div>
+        <strong>Errors list:</strong>
+        <ul id="errorsList" class="error-list"></ul>
+      </div>
+    </div>
+
+    <script>
+      const runIdEl = document.getElementById('runId');
+      const statusEl = document.getElementById('status');
+      const progressTextEl = document.getElementById('progressText');
+      const progressBarEl = document.getElementById('progressBar');
+      const fatalErrorEl = document.getElementById('fatalError');
+      const errorsListEl = document.getElementById('errorsList');
+      const startBtn = document.getElementById('startBtn');
+
+      let pollTimer = null;
+
+      function renderRun(run) {
+        runIdEl.textContent = run.id;
+        statusEl.textContent = run.status;
+        progressTextEl.textContent = `${run.progress} / ${run.totals}`;
+        progressBarEl.max = Math.max(1, run.totals || 1);
+        progressBarEl.value = run.progress;
+        fatalErrorEl.textContent = run.error || 'none';
+
+        errorsListEl.innerHTML = '';
+        for (const message of run.errors || []) {
+          const li = document.createElement('li');
+          li.textContent = message;
+          errorsListEl.appendChild(li);
+        }
+      }
+
+      async function pollRun(runId) {
+        const response = await fetch(`/generation-runs/${runId}`);
+        const run = await response.json();
+        renderRun(run);
+
+        if (['completed', 'completed_with_errors', 'failed'].includes(run.status)) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }
+
+      startBtn.addEventListener('click', async () => {
+        const projectId = document.getElementById('projectId').value;
+        const response = await fetch(`/projects/${projectId}/generate`, { method: 'POST' });
+        const data = await response.json();
+
+        runIdEl.textContent = data.generationRunId;
+        statusEl.textContent = 'queued';
+        progressTextEl.textContent = '0 / 0';
+        fatalErrorEl.textContent = 'none';
+        errorsListEl.innerHTML = '';
+
+        if (pollTimer) {
+          clearInterval(pollTimer);
+        }
+
+        await pollRun(data.generationRunId);
+        pollTimer = setInterval(() => {
+          pollRun(data.generationRunId).catch((error) => {
+            fatalErrorEl.textContent = `Polling failed: ${error.message}`;
+          });
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
