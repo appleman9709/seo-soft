@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Row Regeneration</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; }
+      table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+      th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+      th { background: #f6f6f6; }
+      .toolbar { display: flex; gap: 8px; align-items: center; }
+      .status { margin-top: 12px; padding: 8px; border-radius: 6px; }
+      .status.ok { background: #eefaf0; border: 1px solid #90d7a1; }
+      .status.warn { background: #fff8e6; border: 1px solid #f1c96a; }
+    </style>
+  </head>
+  <body>
+    <h1>Content Rows</h1>
+    <div class="toolbar">
+      <label>
+        Role:
+        <select id="role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </label>
+      <button id="regenSelected">Regenerate selected</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="rowsBody"></tbody>
+    </table>
+    <div id="status"></div>
+
+    <script>
+      const rowsBody = document.getElementById('rowsBody');
+      const statusNode = document.getElementById('status');
+
+      async function loadRows() {
+        const res = await fetch('/rows');
+        const data = await res.json();
+        rowsBody.innerHTML = data.rows
+          .map(
+            (row) => `
+            <tr>
+              <td><input type="checkbox" data-row-id="${row.id}" data-status="${row.status}" /></td>
+              <td>${row.id}</td>
+              <td>${row.title}</td>
+              <td>${row.status}</td>
+            </tr>
+          `,
+          )
+          .join('');
+      }
+
+      function showStatus(message, warn = false) {
+        statusNode.className = `status ${warn ? 'warn' : 'ok'}`;
+        statusNode.textContent = message;
+      }
+
+      document.getElementById('regenSelected').addEventListener('click', async () => {
+        const selected = [...document.querySelectorAll('input[data-row-id]:checked')];
+        if (selected.length === 0) {
+          showStatus('Select at least one row before regenerating.', true);
+          return;
+        }
+
+        const hasApproved = selected.some((node) => node.dataset.status === 'Approved');
+        let force = false;
+        if (hasApproved) {
+          force = confirm('Some selected rows are Approved. Regenerate with force=true?');
+          if (!force) {
+            showStatus('Regeneration canceled. Approved rows need explicit force=true.', true);
+            return;
+          }
+        }
+
+        const rowIds = selected.map((node) => Number(node.dataset.rowId));
+        const role = document.getElementById('role').value;
+        const response = await fetch('/rows/regenerate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-role': role,
+          },
+          body: JSON.stringify({
+            rowIds,
+            languages: ['en', 'fr'],
+            force,
+          }),
+        });
+
+        const body = await response.json();
+        const failures = body.results.filter((item) => !item.regenerated);
+
+        if (failures.length) {
+          const details = failures.map((item) => `#${item.rowId}: ${item.reason}`).join(' | ');
+          showStatus(`${body.message} ${details}`, true);
+          return;
+        }
+
+        showStatus(body.message);
+      });
+
+      loadRows();
+    </script>
+  </body>
+</html>
