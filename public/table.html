@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Table</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>Issue Table</h1>
+    <div class="toolbar panel">
+      <div>
+        <a href="/report">← Back to report</a>
+      </div>
+      <div>
+        <label for="issueFilter">Issue filter:</label>
+        <select id="issueFilter"></select>
+        <button id="clearFilter">Clear</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>URL</th>
+          <th>Status</th>
+          <th>Issue Type</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </main>
+
+  <script src="/data.js"></script>
+  <script>
+    const rows = window.issueData;
+    const issueFilter = document.getElementById('issueFilter');
+    const clearFilter = document.getElementById('clearFilter');
+    const tableBody = document.getElementById('tableBody');
+
+    const uniqueIssues = Array.from(new Set(rows.map((row) => row.issueType).filter((issue) => issue !== 'No issues')));
+    issueFilter.innerHTML = '<option value="">All issues</option>' + uniqueIssues.map((issue) => `<option value="${issue}">${issue}</option>`).join('');
+
+    const params = new URLSearchParams(window.location.search);
+    const preselectedIssue = params.get('issueType') || '';
+    if (preselectedIssue) {
+      issueFilter.value = preselectedIssue;
+    }
+
+    function render() {
+      const selected = issueFilter.value;
+      const filtered = selected ? rows.filter((row) => row.issueType === selected) : rows;
+
+      tableBody.innerHTML = '';
+      filtered.forEach((row) => {
+        const tr = document.createElement('tr');
+        if (selected && row.issueType === selected) {
+          tr.classList.add('highlight');
+        }
+
+        tr.innerHTML = `
+          <td>${row.url}</td>
+          <td><span class="tag ${row.status}">${row.status.toUpperCase()}</span></td>
+          <td>${row.issueType}</td>
+          <td>${row.details}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      const url = new URL(window.location.href);
+      if (selected) {
+        url.searchParams.set('issueType', selected);
+      } else {
+        url.searchParams.delete('issueType');
+      }
+      window.history.replaceState({}, '', url);
+    }
+
+    issueFilter.addEventListener('change', render);
+    clearFilter.addEventListener('click', () => {
+      issueFilter.value = '';
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

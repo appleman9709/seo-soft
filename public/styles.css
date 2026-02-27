@@ -1,0 +1,159 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f7fb;
+  color: #243447;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+h1, h2 {
+  margin-top: 0;
+}
+
+a {
+  color: #1c63d5;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card .label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #657488;
+}
+
+.card .value {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.card.error .value { color: #d92c20; }
+.card.warning .value { color: #f39a00; }
+.card.ready .value { color: #168b4f; }
+
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 18px;
+}
+
+.issue-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.issue-item {
+  border-bottom: 1px solid #e5eaf0;
+  padding: 12px 0;
+}
+
+.issue-item:last-child {
+  border-bottom: none;
+}
+
+.issue-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.count-pill {
+  background: #edf3ff;
+  color: #1c63d5;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.fix {
+  margin-top: 6px;
+  color: #546579;
+  font-size: 14px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+select, button {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #cad4e0;
+  background: white;
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e9eef4;
+}
+
+tr.highlight {
+  background: #fff7db;
+}
+
+.tag {
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tag.error { background: #ffe8e6; color: #be2a22; }
+.tag.warning { background: #fff4dd; color: #a16600; }
+.tag.ready { background: #e6f8ed; color: #126e3e; }
+
+small.note {
+  display: block;
+  margin-top: 8px;
+  color: #657488;
+}

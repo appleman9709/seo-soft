@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Report</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main>
+    <h1>SEO Report</h1>
+    <div class="cards" id="summaryCards"></div>
+
+    <section class="panel">
+      <h2>Issue types</h2>
+      <ul class="issue-list" id="issueList"></ul>
+      <small class="note">Tip: click any issue type to drill down into the filtered table.</small>
+    </section>
+  </main>
+
+  <script src="/data.js"></script>
+  <script>
+    const data = window.issueData;
+    const suggestions = window.fixSuggestions;
+
+    function countByStatus(status) {
+      return data.filter((row) => row.status === status).length;
+    }
+
+    const cards = [
+      { label: 'Errors', status: 'error', className: 'error' },
+      { label: 'Warnings', status: 'warning', className: 'warning' },
+      { label: 'Ready', status: 'ready', className: 'ready' }
+    ];
+
+    const summaryCards = document.getElementById('summaryCards');
+    cards.forEach((card) => {
+      const el = document.createElement('div');
+      el.className = `card ${card.className}`;
+      el.innerHTML = `<div class="label">${card.label}</div><div class="value">${countByStatus(card.status)}</div>`;
+      summaryCards.appendChild(el);
+    });
+
+    const issueCounts = data.reduce((acc, row) => {
+      if (row.issueType === 'No issues') return acc;
+      acc[row.issueType] = (acc[row.issueType] || 0) + 1;
+      return acc;
+    }, {});
+
+    const issueList = document.getElementById('issueList');
+    Object.entries(issueCounts)
+      .sort((a, b) => b[1] - a[1])
+      .forEach(([issueType, count]) => {
+        const li = document.createElement('li');
+        li.className = 'issue-item';
+        li.innerHTML = `
+          <div class="issue-meta">
+            <a href="/table?issueType=${encodeURIComponent(issueType)}">${issueType}</a>
+            <span class="count-pill">${count}</span>
+          </div>
+          <div class="fix"><strong>Fix suggestion:</strong> ${suggestions[issueType] || 'Review and resolve issue manually.'}</div>
+        `;
+        issueList.appendChild(li);
+      });
+  </script>
+</body>
+</html>
