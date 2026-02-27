@@ -1,0 +1,11 @@
+{
+  "name": "seo-soft",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "api": "node scripts/api.js",
+    "create:project": "node scripts/create-project.js",
+    "test": "node --test"
+  }
+}
