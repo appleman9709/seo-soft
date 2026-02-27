@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id                String           @id @default(cuid())
+  name              String
+  domain            String
+  languages         String[]
+  rules             Json             @default("{}")
+  templates         Template[]
+  rows              Row[]
+  auditLogs         AuditLog[]
+  generationResults GenerationResult[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model Template {
+  id         String       @id @default(cuid())
+  projectId  String
+  kind       TemplateKind
+  entityType String
+  lang       String?
+  body       String
+  version    Int          @default(1)
+  isDefault  Boolean      @default(false)
+  project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model Row {
+  id                String             @id @default(cuid())
+  projectId         String
+  url               String
+  entityType        String
+  sourceFields      Json
+  status            RowStatus          @default(Draft)
+  project           Project            @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  generationResults GenerationResult[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([projectId])
+}
+
+model GenerationResult {
+  id              String   @id @default(cuid())
+  rowId           String
+  projectId       String
+  lang            String
+  metaTitle       String
+  metaDescription String
+  h1              String
+  schemaJsonLd    String
+  validations     Json
+  version         Int      @default(1)
+  createdAt       DateTime @default(now())
+  createdBy       String
+  row             Row      @relation(fields: [rowId], references: [id], onDelete: Cascade)
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([rowId])
+  @@index([projectId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  projectId String
+  actor     String
+  action    String
+  payload   Json
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+enum RowStatus {
+  Draft
+  Review
+  Approved
+  Exported
+}
+
+enum TemplateKind {
+  meta
+  schema
+}
