@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Templates</title>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Templates</h1>
+
+      <section class="panel">
+        <h2>Filters</h2>
+        <div class="grid">
+          <label>Project ID <input id="projectId" type="number" value="1" /></label>
+          <label>Kind
+            <select id="kindFilter">
+              <option value="">Any</option>
+              <option value="meta">meta</option>
+              <option value="schema">schema</option>
+            </select>
+          </label>
+          <label>Entity Type <input id="entityTypeFilter" placeholder="product" /></label>
+          <label>Lang <input id="langFilter" placeholder="en" /></label>
+        </div>
+        <button id="refreshBtn">Refresh</button>
+      </section>
+
+      <section class="panel">
+        <h2>Create Template</h2>
+        <div class="grid">
+          <label>Kind
+            <select id="kindInput">
+              <option value="meta">meta</option>
+              <option value="schema">schema</option>
+            </select>
+          </label>
+          <label>Entity Type <input id="entityTypeInput" value="product" /></label>
+          <label>Lang (optional) <input id="langInput" placeholder="en" /></label>
+        </div>
+        <p id="placeholderHelper">Allowed placeholders: </p>
+        <label>Template body</label>
+        <textarea id="templateBody" rows="5">Buy {name} by {brand} in {city} from {price_from}</textarea>
+        <div class="row">
+          <button id="createBtn">Create</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Templates List</h2>
+        <table id="templatesTable">
+          <thead>
+            <tr>
+              <th>ID</th><th>Root</th><th>Version</th><th>Scope</th><th>Default</th><th>Body</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script type="module" src="/templates.js"></script>
+  </body>
+</html>
