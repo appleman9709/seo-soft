@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Version History</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; }
+    .container { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    ul { list-style: none; padding: 0; }
+    li { border: 1px solid #ddd; margin-bottom: .5rem; padding: .6rem; border-radius: 8px; }
+    .meta { color: #666; font-size: .9rem; }
+    button { margin-top: .4rem; }
+    pre { background: #111; color: #f5f5f5; padding: 1rem; border-radius: 8px; white-space: pre-wrap; }
+    .add { color: #7CFC00; }
+    .del { color: #ff6b6b; }
+    .toolbar { margin-bottom: 1rem; display: flex; gap: .5rem; }
+  </style>
+</head>
+<body>
+  <h1>GenerationResult Version History</h1>
+  <div class="toolbar">
+    <input id="rowId" value="1" aria-label="row id" />
+    <input id="lang" value="en" aria-label="language" />
+    <button id="reload">Load History</button>
+  </div>
+
+  <div class="container">
+    <section>
+      <h2>Versions (select 2 to compare)</h2>
+      <ul id="history"></ul>
+    </section>
+
+    <section>
+      <h2>Diff</h2>
+      <pre id="diffOutput">Select two versions to compare.</pre>
+    </section>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
